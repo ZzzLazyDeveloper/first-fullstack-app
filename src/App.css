@@ -1,7 +1,3 @@
 .app {
   min-height: 100vh;
 }
-
-.app main {
-  display: block;
-}

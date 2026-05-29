@@ -1,0 +1,83 @@
+.dialog-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  padding: 24px;
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.dialog {
+  width: 100%;
+  max-width: 400px;
+  padding: 28px;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  animation: slideUp 0.2s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dialog__title {
+  font-size: 1.15rem;
+  margin-bottom: 8px;
+}
+
+.dialog__message {
+  font-size: 0.9rem;
+  color: var(--color-text);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.dialog__actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.dialog__btn {
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: background 0.15s;
+}
+
+.dialog__btn--cancel {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-heading);
+}
+
+.dialog__btn--cancel:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dialog__btn--confirm {
+  background: #dc2626;
+  color: white;
+}
+
+.dialog__btn--confirm:hover {
+  background: #b91c1c;
+}

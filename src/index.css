@@ -1,5 +1,3 @@
-/* Global CSS variables and base styles for the entire app */
-
 :root {
   --color-bg: #0a0a0f;
   --color-bg-elevated: #12121a;
@@ -13,25 +11,12 @@
   --color-gradient-start: #6366f1;
   --color-gradient-end: #a855f7;
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --max-width: 1200px;
-  --section-padding: 96px 24px;
-  --section-padding-mobile: 64px 20px;
-}
-
-@media (max-width: 768px) {
-  :root {
-    --section-padding: var(--section-padding-mobile);
-  }
 }
 
 *,
 *::before,
 *::after {
   box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
 }
 
 body {
@@ -48,10 +33,7 @@ body {
   min-height: 100vh;
 }
 
-h1,
-h2,
-h3,
-h4 {
+h1, h2, h3, h4 {
   margin: 0;
   color: var(--color-text-heading);
   font-weight: 600;
@@ -60,11 +42,6 @@ h4 {
 
 p {
   margin: 0;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
 }
 
 button {
@@ -77,9 +54,4 @@ input,
 textarea {
   font-family: inherit;
   font-size: inherit;
-}
-
-img {
-  max-width: 100%;
-  display: block;
 }
