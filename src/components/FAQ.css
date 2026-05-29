@@ -1,0 +1,131 @@
+.faq {
+  padding: var(--section-padding);
+}
+
+.faq__container {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.faq__header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.faq__label {
+  display: inline-block;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-accent-light);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 16px;
+}
+
+.faq__title {
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  margin-bottom: 16px;
+}
+
+.faq__subtitle {
+  font-size: 1.05rem;
+  color: var(--color-text);
+}
+
+.faq__subtitle a {
+  color: var(--color-accent-light);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.faq__subtitle a:hover {
+  color: var(--color-text-heading);
+}
+
+.faq__list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.faq__item {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.faq__item--open {
+  border-color: rgba(99, 102, 241, 0.3);
+}
+
+.faq__question {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px;
+  background: none;
+  color: var(--color-text-heading);
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: left;
+  transition: color 0.2s;
+}
+
+.faq__question:hover {
+  color: var(--color-accent-light);
+}
+
+.faq__icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: rgba(99, 102, 241, 0.1);
+  border-radius: 6px;
+  font-size: 1.1rem;
+  color: var(--color-accent-light);
+}
+
+.faq__answer-wrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease;
+}
+
+.faq__item--open .faq__answer-wrapper {
+  grid-template-rows: 1fr;
+}
+
+.faq__answer {
+  overflow: hidden;
+  padding: 0 24px;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  line-height: 1.7;
+  transition: padding 0.3s ease;
+}
+
+.faq__item--open .faq__answer {
+  padding: 0 24px 20px;
+}
+
+@media (max-width: 640px) {
+  .faq__question {
+    padding: 16px 20px;
+    font-size: 0.95rem;
+  }
+
+  .faq__answer {
+    padding: 0 20px;
+  }
+
+  .faq__item--open .faq__answer {
+    padding: 0 20px 16px;
+  }
+}
