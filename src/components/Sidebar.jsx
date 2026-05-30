@@ -50,7 +50,7 @@ function Sidebar({
       <div className="sidebar__header">
         <div className="sidebar__brand">
           <span className="sidebar__logo">📝</span>
-          <h1 className="sidebar__title">Notes</h1>
+          <h1 className="sidebar__title">Yubo's Notes App</h1>
         </div>
         <button type="button" className="sidebar__new-btn" onClick={onNewNote}>
           + New Note
