@@ -67,10 +67,139 @@
 .sidebar__new-btn:focus-visible,
 .sidebar__search-input:focus-visible,
 .note-card:focus-visible,
+.note-card__pin:focus-visible,
 .note-card__delete:focus-visible,
-.sidebar__search-clear:focus-visible {
+.sidebar__search-clear:focus-visible,
+.folder-nav button:focus-visible {
   outline: 3px solid var(--color-focus);
   outline-offset: 2px;
+}
+
+.folder-nav {
+  display: grid;
+  gap: 8px;
+  padding: 0 12px 14px;
+}
+
+.folder-nav__item,
+.folder-nav__folder {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  min-height: 36px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-radius: 9px;
+  background: transparent;
+  color: #41506a;
+  font-size: 0.86rem;
+  font-weight: 720;
+  text-align: left;
+}
+
+.folder-nav__item {
+  padding: 8px 10px;
+}
+
+.folder-nav__item strong,
+.folder-nav__folder strong {
+  color: #8490a3;
+  font-size: 0.75rem;
+}
+
+.folder-nav__item:hover,
+.folder-nav__row:hover {
+  background: var(--color-panel-muted);
+}
+
+.folder-nav__item--active,
+.folder-nav__row--active {
+  background: var(--color-accent-soft);
+}
+
+.folder-nav__item--active,
+.folder-nav__row--active .folder-nav__folder {
+  color: var(--color-accent-dark);
+}
+
+.folder-nav__label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 10px 0;
+  color: #69758a;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.folder-nav__label button {
+  display: grid;
+  width: 26px;
+  height: 26px;
+  place-items: center;
+  border-radius: 8px;
+  background: var(--color-panel-muted);
+  color: var(--color-heading);
+  font-weight: 900;
+}
+
+.folder-nav__label button:hover {
+  background: var(--color-border);
+}
+
+.folder-nav__list {
+  display: grid;
+  gap: 4px;
+}
+
+.folder-nav__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  border-radius: 9px;
+}
+
+.folder-nav__folder {
+  padding: 8px 10px;
+}
+
+.folder-nav__folder span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.folder-nav__actions {
+  display: flex;
+  gap: 2px;
+  padding-right: 4px;
+  opacity: 0;
+  transition: opacity 0.16s ease;
+}
+
+.folder-nav__row:hover .folder-nav__actions,
+.folder-nav__row--active .folder-nav__actions {
+  opacity: 1;
+}
+
+.folder-nav__actions button {
+  min-width: 28px;
+  height: 28px;
+  padding: 0 6px;
+  border-radius: 8px;
+  background: transparent;
+  color: #69758a;
+  font-size: 0.68rem;
+  font-weight: 800;
+}
+
+.folder-nav__actions button:hover {
+  background: #ffffff;
+  color: var(--color-heading);
 }
 
 .sidebar__search {
@@ -192,6 +321,12 @@
   margin-bottom: 6px;
 }
 
+.note-card__heading {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+}
+
 .note-card__title {
   min-width: 0;
   overflow: hidden;
@@ -202,6 +337,22 @@
   white-space: nowrap;
 }
 
+.note-card__folder {
+  overflow: hidden;
+  color: #8a96aa;
+  font-size: 0.72rem;
+  font-weight: 720;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.note-card__actions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 4px;
+}
+
+.note-card__pin,
 .note-card__delete {
   display: grid;
   width: 26px;
@@ -218,8 +369,17 @@
 }
 
 .note-card:hover .note-card__delete,
-.note-card--active .note-card__delete {
+.note-card--active .note-card__delete,
+.note-card:hover .note-card__pin,
+.note-card--active .note-card__pin,
+.note-card__pin--active {
   opacity: 1;
+}
+
+.note-card__pin:hover,
+.note-card__pin--active {
+  background: var(--color-accent-soft);
+  color: var(--color-accent-dark);
 }
 
 .note-card__delete:hover {
@@ -250,16 +410,16 @@
   }
 
   .sidebar__header {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
     gap: 14px;
     padding: 16px;
   }
 
   .sidebar__new-btn {
-    width: auto;
-    min-width: 116px;
+    width: 100%;
+  }
+
+  .folder-nav {
+    padding: 0 10px 12px;
   }
 
   .sidebar__search {

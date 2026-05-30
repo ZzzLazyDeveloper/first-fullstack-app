@@ -1,8 +1,9 @@
 import { formatDate } from '../utils/formatDate'
+import { ALL_NOTES_ID, DEFAULT_FOLDER_ID } from '../hooks/useNotes'
 import AuthPanel from './AuthPanel'
 import './Sidebar.css'
 
-function NoteCard({ note, isActive, onSelect, onDelete }) {
+function NoteCard({ note, isActive, folderName, onSelect, onTogglePinned, onDelete }) {
   const title = (note.title || '').trim() || 'Untitled note'
   const preview = (note.content || '').trim() || 'No content yet'
 
@@ -12,18 +13,34 @@ function NoteCard({ note, isActive, onSelect, onDelete }) {
       onClick={() => onSelect(note.id)}
     >
       <div className="note-card__header">
-        <h3 className="note-card__title">{title}</h3>
-        <button
-          type="button"
-          className="note-card__delete"
-          aria-label={`Delete ${title}`}
-          onClick={(event) => {
-            event.stopPropagation()
-            onDelete(note.id)
-          }}
-        >
-          <span aria-hidden="true">x</span>
-        </button>
+        <div className="note-card__heading">
+          <h3 className="note-card__title">{title}</h3>
+          <span className="note-card__folder">{folderName}</span>
+        </div>
+        <div className="note-card__actions">
+          <button
+            type="button"
+            className={`note-card__pin ${note.pinned ? 'note-card__pin--active' : ''}`}
+            aria-label={note.pinned ? `Unpin ${title}` : `Pin ${title}`}
+            onClick={(event) => {
+              event.stopPropagation()
+              onTogglePinned(note.id, !note.pinned)
+            }}
+          >
+            <span aria-hidden="true">^</span>
+          </button>
+          <button
+            type="button"
+            className="note-card__delete"
+            aria-label={`Delete ${title}`}
+            onClick={(event) => {
+              event.stopPropagation()
+              onDelete(note.id)
+            }}
+          >
+            <span aria-hidden="true">x</span>
+          </button>
+        </div>
       </div>
       <p className="note-card__preview">{preview}</p>
       <time className="note-card__date" dateTime={note.updatedAt}>
@@ -35,10 +52,12 @@ function NoteCard({ note, isActive, onSelect, onDelete }) {
 
 function Sidebar({
   notes,
-  filteredNotes,
+  folders,
+  displayNotes,
   searchQuery,
   onSearchChange,
   selectedId,
+  selectedFolderId,
   user,
   isAuthLoading,
   authError,
@@ -50,10 +69,31 @@ function Sidebar({
   onGoogleSignIn,
   onLogOut,
   onSelect,
+  onSelectFolder,
   onNewNote,
   onDelete,
+  onAddFolder,
+  onRenameFolder,
+  onDeleteFolder,
+  onUpdateNote,
 }) {
-  const displayNotes = searchQuery.trim() ? filteredNotes : notes
+  const folderCounts = notes.reduce((counts, note) => {
+    const folderId = note.folderId || DEFAULT_FOLDER_ID
+    counts[folderId] = (counts[folderId] || 0) + 1
+    return counts
+  }, {})
+  const folderNames = folders.reduce((names, folder) => {
+    names[folder.id] = folder.name
+    return names
+  }, {})
+  const pinnedCount = displayNotes.filter((note) => note.pinned).length
+
+  function handleRenameFolder(folder) {
+    const nextName = window.prompt('Rename folder', folder.name)
+    if (nextName === null) return
+
+    onRenameFolder(folder.id, nextName)
+  }
 
   return (
     <aside className="sidebar" aria-label="Notes">
@@ -80,6 +120,60 @@ function Sidebar({
         </button>
       </div>
 
+      <nav className="folder-nav" aria-label="Folders">
+        <button
+          type="button"
+          className={`folder-nav__item ${selectedFolderId === ALL_NOTES_ID ? 'folder-nav__item--active' : ''}`}
+          onClick={() => onSelectFolder(ALL_NOTES_ID)}
+        >
+          <span>All Notes</span>
+          <strong>{notes.length}</strong>
+        </button>
+
+        <div className="folder-nav__label">
+          <span>Folders</span>
+          <button type="button" onClick={onAddFolder} aria-label="Create folder">
+            +
+          </button>
+        </div>
+
+        <div className="folder-nav__list">
+          {folders.map((folder) => (
+            <div
+              key={folder.id}
+              className={`folder-nav__row ${selectedFolderId === folder.id ? 'folder-nav__row--active' : ''}`}
+            >
+              <button
+                type="button"
+                className="folder-nav__folder"
+                onClick={() => onSelectFolder(folder.id)}
+              >
+                <span>{folder.name}</span>
+                <strong>{folderCounts[folder.id] || 0}</strong>
+              </button>
+              {folder.id !== DEFAULT_FOLDER_ID && (
+                <div className="folder-nav__actions">
+                  <button
+                    type="button"
+                    aria-label={`Rename ${folder.name}`}
+                    onClick={() => handleRenameFolder(folder)}
+                  >
+                    edit
+                  </button>
+                  <button
+                    type="button"
+                    aria-label={`Delete ${folder.name}`}
+                    onClick={() => onDeleteFolder(folder.id)}
+                  >
+                    x
+                  </button>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </nav>
+
       <div className="sidebar__search">
         <span className="sidebar__search-icon" aria-hidden="true">/</span>
         <input
@@ -103,10 +197,11 @@ function Sidebar({
       </div>
 
       <div className="sidebar__stats">
-        {isNotesLoading ? 'Loading notes' : `${notes.length} ${notes.length === 1 ? 'note' : 'notes'}`}
+        {isNotesLoading ? 'Loading notes' : `${displayNotes.length} ${displayNotes.length === 1 ? 'note' : 'notes'}`}
         {user && <span> / cloud</span>}
-        {searchQuery.trim() && displayNotes.length !== notes.length && (
-          <span> / {displayNotes.length} found</span>
+        {pinnedCount > 0 && <span> / {pinnedCount} pinned</span>}
+        {searchQuery.trim() && (
+          <span> / search on</span>
         )}
       </div>
       {notesError && <p className="sidebar__error">{notesError}</p>}
@@ -123,8 +218,10 @@ function Sidebar({
             <NoteCard
               key={note.id}
               note={note}
+              folderName={folderNames[note.folderId] || 'General'}
               isActive={note.id === selectedId}
               onSelect={onSelect}
+              onTogglePinned={(id, pinned) => onUpdateNote(id, { pinned })}
               onDelete={onDelete}
             />
           ))

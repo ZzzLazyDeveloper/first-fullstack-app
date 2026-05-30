@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { formatDate } from '../utils/formatDate'
 import './NoteEditor.css'
 
-function NoteEditor({ note, focusTitle, onUpdate, onDelete }) {
+function NoteEditor({ note, folders, selectedFolder, focusTitle, onUpdate, onDelete }) {
   const titleRef = useRef(null)
 
   useEffect(() => {
@@ -35,6 +35,14 @@ function NoteEditor({ note, focusTitle, onUpdate, onDelete }) {
     onUpdate(note.id, { content: event.target.value })
   }
 
+  function handleFolderChange(event) {
+    onUpdate(note.id, { folderId: event.target.value })
+  }
+
+  function handlePinnedChange() {
+    onUpdate(note.id, { pinned: !note.pinned })
+  }
+
   const content = note.content || ''
   const wordCount = content.trim()
     ? content.trim().split(/\s+/).length
@@ -47,14 +55,37 @@ function NoteEditor({ note, focusTitle, onUpdate, onDelete }) {
           <span>Updated {formatDate(note.updatedAt)}</span>
           <span className="editor__meta-divider">/</span>
           <span>{wordCount} {wordCount === 1 ? 'word' : 'words'}</span>
+          <span className="editor__meta-divider">/</span>
+          <span>{selectedFolder?.name || 'All Notes'}</span>
         </div>
-        <button
-          type="button"
-          className="editor__delete-btn"
-          onClick={() => onDelete(note.id)}
-        >
-          Delete
-        </button>
+        <div className="editor__actions">
+          <select
+            className="editor__folder-select"
+            value={note.folderId}
+            onChange={handleFolderChange}
+            aria-label="Move note to folder"
+          >
+            {folders.map((folder) => (
+              <option key={folder.id} value={folder.id}>
+                {folder.name}
+              </option>
+            ))}
+          </select>
+          <button
+            type="button"
+            className={`editor__pin-btn ${note.pinned ? 'editor__pin-btn--active' : ''}`}
+            onClick={handlePinnedChange}
+          >
+            {note.pinned ? 'Pinned' : 'Pin'}
+          </button>
+          <button
+            type="button"
+            className="editor__delete-btn"
+            onClick={() => onDelete(note.id)}
+          >
+            Delete
+          </button>
+        </div>
       </div>
 
       <input

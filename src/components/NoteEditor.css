@@ -62,8 +62,45 @@
   font-weight: 700;
 }
 
+.editor__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .editor__meta-divider {
   color: #a3adbd;
+}
+
+.editor__folder-select {
+  max-width: 160px;
+  min-height: 38px;
+  padding: 8px 32px 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: #ffffff;
+  color: var(--color-heading);
+  font-size: 0.84rem;
+  font-weight: 720;
+}
+
+.editor__pin-btn {
+  min-height: 38px;
+  padding: 8px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: #ffffff;
+  color: var(--color-heading);
+  font-size: 0.86rem;
+  font-weight: 760;
+  transition: background 0.16s ease, border-color 0.16s ease;
+}
+
+.editor__pin-btn:hover,
+.editor__pin-btn--active {
+  background: var(--color-accent-soft);
+  border-color: rgba(37, 99, 235, 0.28);
+  color: var(--color-accent-dark);
 }
 
 .editor__delete-btn {
@@ -84,6 +121,8 @@
 }
 
 .editor__delete-btn:focus-visible,
+.editor__pin-btn:focus-visible,
+.editor__folder-select:focus-visible,
 .editor__title:focus-visible,
 .editor__content:focus-visible {
   outline: 3px solid var(--color-focus);
@@ -141,7 +180,20 @@
   }
 
   .editor__toolbar {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 12px;
     padding: 14px 18px;
+  }
+
+  .editor__actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+  }
+
+  .editor__folder-select {
+    max-width: none;
+    min-width: 0;
   }
 
   .editor__delete-btn {
