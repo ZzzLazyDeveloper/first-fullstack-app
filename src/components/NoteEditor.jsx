@@ -198,6 +198,7 @@ function NoteEditor({
     return (
       <div className="editor editor--empty">
         <div className="editor__welcome">
+          <span className="editor__section-label">Editor</span>
           <span className="editor__welcome-icon" aria-hidden="true">N</span>
           <h2>No note selected</h2>
           <p>
@@ -241,9 +242,12 @@ function NoteEditor({
     : 0
 
   return (
-    <main className="editor">
+    <main className={`editor ${mode === 'preview' ? 'editor--preview' : 'editor--edit'} ${isTrashView ? 'editor--trash' : ''}`}>
       <div className="editor__toolbar">
         <div className="editor__meta">
+          <span className="editor__section-label">
+            {isTrashView ? 'Trash' : mode === 'preview' ? 'Preview mode' : 'Editor'}
+          </span>
           <span>Updated {formatDate(note.updatedAt)}</span>
           <span className="editor__meta-divider">/</span>
           <span>{wordCount} {wordCount === 1 ? 'word' : 'words'}</span>

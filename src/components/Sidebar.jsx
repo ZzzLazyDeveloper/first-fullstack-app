@@ -133,7 +133,7 @@ function Sidebar({
   }
 
   return (
-    <aside className="sidebar" aria-label="Notes">
+    <aside className={`sidebar ${isTrashView ? 'sidebar--trash' : ''}`} aria-label="Notes">
       <div className="sidebar__header">
         <div className="sidebar__brand">
           <span className="sidebar__logo" aria-hidden="true">N</span>
@@ -158,6 +158,9 @@ function Sidebar({
       </div>
 
       <nav className="folder-nav" aria-label="Folders">
+        <div className="sidebar__section-heading">
+          <span>Folder list</span>
+        </div>
         <button
           type="button"
           className={`folder-nav__item ${selectedFolderId === ALL_NOTES_ID ? 'folder-nav__item--active' : ''}`}
@@ -246,18 +249,21 @@ function Sidebar({
         )}
       </div>
 
-      <div className="sidebar__stats">
-        {isNotesLoading ? 'Loading notes' : `${displayNotes.length} ${displayNotes.length === 1 ? 'note' : 'notes'}`}
-        {user && <span> / cloud</span>}
-        {!isTrashView && pinnedCount > 0 && <span> / {pinnedCount} pinned</span>}
-        {isTrashView && <span> / trash</span>}
-        {!isTrashView && searchQuery.trim() && (
-          <span> / search on</span>
-        )}
+      <div className="sidebar__list-header">
+        <span className="sidebar__section-heading">Note list</span>
+        <span className="sidebar__stats">
+          {isNotesLoading ? 'Loading notes' : `${displayNotes.length} ${displayNotes.length === 1 ? 'note' : 'notes'}`}
+          {user && <span> / cloud</span>}
+          {!isTrashView && pinnedCount > 0 && <span> / {pinnedCount} pinned</span>}
+          {isTrashView && <span> / trash</span>}
+          {!isTrashView && searchQuery.trim() && (
+            <span> / search on</span>
+          )}
+        </span>
       </div>
       {notesError && <p className="sidebar__error">{notesError}</p>}
 
-      <div className="sidebar__list">
+      <div className="sidebar__list" key={selectedFolderId}>
         {displayNotes.length === 0 ? (
           <div className="sidebar__empty">
             <span className="sidebar__empty-icon" aria-hidden="true">

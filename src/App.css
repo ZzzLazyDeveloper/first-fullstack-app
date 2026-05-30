@@ -2,6 +2,7 @@
   min-height: 100vh;
   padding: 22px;
   isolation: isolate;
+  perspective: 1200px;
 }
 
 @media (max-width: 768px) {

@@ -209,6 +209,7 @@ function Dashboard() {
       />
 
       <NoteEditor
+        key={selectedNote ? selectedNote.id : selectedFolderId}
         note={selectedNote}
         folders={folders}
         selectedFolder={selectedNoteFolder}
