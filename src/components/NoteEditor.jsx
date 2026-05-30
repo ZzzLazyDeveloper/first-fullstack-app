@@ -19,7 +19,8 @@ function NoteEditor({ note, focusTitle, onUpdate, onDelete }) {
           <h2>No note selected</h2>
           <p>
             Select a note from the sidebar or create a new one. Edits save
-            automatically to localStorage.
+            automatically to Firestore when signed in, or localStorage when
+            signed out.
           </p>
         </div>
       </div>

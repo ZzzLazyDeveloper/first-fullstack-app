@@ -1,4 +1,5 @@
 import { formatDate } from '../utils/formatDate'
+import AuthPanel from './AuthPanel'
 import './Sidebar.css'
 
 function NoteCard({ note, isActive, onSelect, onDelete }) {
@@ -38,6 +39,16 @@ function Sidebar({
   searchQuery,
   onSearchChange,
   selectedId,
+  user,
+  isAuthLoading,
+  authError,
+  isFirebaseConfigured,
+  isNotesLoading,
+  notesError,
+  onSignUp,
+  onLogIn,
+  onGoogleSignIn,
+  onLogOut,
   onSelect,
   onNewNote,
   onDelete,
@@ -54,6 +65,16 @@ function Sidebar({
             <h1 className="sidebar__title">Notes</h1>
           </div>
         </div>
+        <AuthPanel
+          user={user}
+          isAuthLoading={isAuthLoading}
+          authError={authError}
+          isFirebaseConfigured={isFirebaseConfigured}
+          onSignUp={onSignUp}
+          onLogIn={onLogIn}
+          onGoogleSignIn={onGoogleSignIn}
+          onLogOut={onLogOut}
+        />
         <button type="button" className="sidebar__new-btn" onClick={onNewNote}>
           + New Note
         </button>
@@ -82,11 +103,13 @@ function Sidebar({
       </div>
 
       <div className="sidebar__stats">
-        {notes.length} {notes.length === 1 ? 'note' : 'notes'}
+        {isNotesLoading ? 'Loading notes' : `${notes.length} ${notes.length === 1 ? 'note' : 'notes'}`}
+        {user && <span> / cloud</span>}
         {searchQuery.trim() && displayNotes.length !== notes.length && (
           <span> / {displayNotes.length} found</span>
         )}
       </div>
+      {notesError && <p className="sidebar__error">{notesError}</p>}
 
       <div className="sidebar__list">
         {displayNotes.length === 0 ? (

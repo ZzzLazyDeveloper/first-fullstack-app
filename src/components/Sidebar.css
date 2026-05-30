@@ -136,6 +136,13 @@
   font-weight: 700;
 }
 
+.sidebar__error {
+  margin: 0 22px 12px;
+  color: var(--color-danger);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
 .sidebar__list {
   display: flex;
   min-height: 0;

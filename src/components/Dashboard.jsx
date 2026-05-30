@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useAuth } from '../hooks/useAuth'
 import { useNotes } from '../hooks/useNotes'
 import Sidebar from './Sidebar'
 import NoteEditor from './NoteEditor'
@@ -6,7 +7,25 @@ import ConfirmDialog from './ConfirmDialog'
 import './Dashboard.css'
 
 function Dashboard() {
-  const { notes, addNote, updateNote, deleteNote, searchNotes } = useNotes()
+  const {
+    user,
+    isAuthLoading,
+    authError,
+    isFirebaseConfigured,
+    signUp,
+    logIn,
+    signInWithGoogle,
+    logOut,
+  } = useAuth()
+  const {
+    notes,
+    isNotesLoading,
+    notesError,
+    addNote,
+    updateNote,
+    deleteNote,
+    searchNotes,
+  } = useNotes(user)
   const [selectedId, setSelectedId] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [deleteTargetId, setDeleteTargetId] = useState(null)
@@ -14,6 +33,13 @@ function Dashboard() {
 
   const filteredNotes = searchNotes(searchQuery)
   const selectedNote = notes.find((n) => n.id === selectedId) ?? null
+
+  useEffect(() => {
+    setSelectedId(null)
+    setSearchQuery('')
+    setDeleteTargetId(null)
+    setFocusTitle(false)
+  }, [user?.uid])
 
   function handleNewNote() {
     const note = addNote()
@@ -29,6 +55,14 @@ function Dashboard() {
 
   function requestDelete(id) {
     setDeleteTargetId(id)
+  }
+
+  function handleLogOut() {
+    setSelectedId(null)
+    setSearchQuery('')
+    setDeleteTargetId(null)
+    setFocusTitle(false)
+    logOut()
   }
 
   function confirmDelete() {
@@ -51,6 +85,16 @@ function Dashboard() {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         selectedId={selectedId}
+        user={user}
+        isAuthLoading={isAuthLoading}
+        authError={authError}
+        isFirebaseConfigured={isFirebaseConfigured}
+        isNotesLoading={isNotesLoading}
+        notesError={notesError}
+        onSignUp={signUp}
+        onLogIn={logIn}
+        onGoogleSignIn={signInWithGoogle}
+        onLogOut={handleLogOut}
         onSelect={handleSelect}
         onNewNote={handleNewNote}
         onDelete={requestDelete}
@@ -66,7 +110,7 @@ function Dashboard() {
       {deleteTargetId && (
         <ConfirmDialog
           title="Delete note?"
-          message="This action cannot be undone. The note will be removed from localStorage."
+          message={`This action cannot be undone. The note will be removed from ${user ? 'Firestore' : 'localStorage'}.`}
           confirmLabel="Delete"
           onConfirm={confirmDelete}
           onCancel={() => setDeleteTargetId(null)}
