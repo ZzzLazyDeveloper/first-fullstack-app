@@ -87,6 +87,7 @@
 .sidebar__search-input:focus-visible,
 .note-card:focus-visible,
 .note-card__pin:focus-visible,
+.note-card__restore:focus-visible,
 .note-card__delete:focus-visible,
 .sidebar__search-clear:focus-visible,
 .folder-nav button:focus-visible,
@@ -276,6 +277,11 @@
   color: #738199;
 }
 
+.sidebar__search-input:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
 .sidebar__search-input:focus {
   border-color: rgba(94, 234, 212, 0.5);
   background: rgba(255, 255, 255, 0.08);
@@ -448,6 +454,7 @@
 }
 
 .note-card__pin,
+.note-card__restore,
 .note-card__delete {
   display: grid;
   width: 28px;
@@ -467,14 +474,22 @@
 .note-card--active .note-card__delete,
 .note-card:hover .note-card__pin,
 .note-card--active .note-card__pin,
+.note-card:hover .note-card__restore,
+.note-card--active .note-card__restore,
 .note-card__pin--active,
 .note-card__actions:focus-within .note-card__pin,
+.note-card__actions:focus-within .note-card__restore,
 .note-card__actions:focus-within .note-card__delete {
   opacity: 1;
 }
 
 .note-card__pin:hover,
 .note-card__pin--active {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+.note-card__restore:hover {
   background: var(--color-accent-soft);
   color: var(--color-accent);
 }

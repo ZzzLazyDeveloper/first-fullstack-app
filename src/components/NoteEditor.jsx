@@ -2,7 +2,17 @@ import { useEffect, useRef } from 'react'
 import { formatDate } from '../utils/formatDate'
 import './NoteEditor.css'
 
-function NoteEditor({ note, folders, selectedFolder, focusTitle, onUpdate, onDelete }) {
+function NoteEditor({
+  note,
+  folders,
+  selectedFolder,
+  isTrashView,
+  focusTitle,
+  onUpdate,
+  onDelete,
+  onRestore,
+  onPermanentDelete,
+}) {
   const titleRef = useRef(null)
 
   useEffect(() => {
@@ -33,18 +43,22 @@ function NoteEditor({ note, folders, selectedFolder, focusTitle, onUpdate, onDel
   }
 
   function handleTitleChange(event) {
+    if (isTrashView) return
     onUpdate(note.id, { title: event.target.value })
   }
 
   function handleContentChange(event) {
+    if (isTrashView) return
     onUpdate(note.id, { content: event.target.value })
   }
 
   function handleFolderChange(event) {
+    if (isTrashView) return
     onUpdate(note.id, { folderId: event.target.value })
   }
 
   function handlePinnedChange() {
+    if (isTrashView) return
     onUpdate(note.id, { pinned: !note.pinned })
   }
 
@@ -61,35 +75,56 @@ function NoteEditor({ note, folders, selectedFolder, focusTitle, onUpdate, onDel
           <span className="editor__meta-divider">/</span>
           <span>{wordCount} {wordCount === 1 ? 'word' : 'words'}</span>
           <span className="editor__meta-divider">/</span>
-          <span>{selectedFolder?.name || 'All Notes'}</span>
+          <span>{isTrashView ? 'Trash' : selectedFolder?.name || 'All Notes'}</span>
         </div>
         <div className="editor__actions">
-          <select
-            className="editor__folder-select"
-            value={note.folderId}
-            onChange={handleFolderChange}
-            aria-label="Move note to folder"
-          >
-            {folders.map((folder) => (
-              <option key={folder.id} value={folder.id}>
-                {folder.name}
-              </option>
-            ))}
-          </select>
-          <button
-            type="button"
-            className={`editor__pin-btn ${note.pinned ? 'editor__pin-btn--active' : ''}`}
-            onClick={handlePinnedChange}
-          >
-            {note.pinned ? 'Pinned' : 'Pin'}
-          </button>
-          <button
-            type="button"
-            className="editor__delete-btn"
-            onClick={() => onDelete(note.id)}
-          >
-            Delete
-          </button>
+          {isTrashView ? (
+            <>
+              <button
+                type="button"
+                className="editor__restore-btn"
+                onClick={() => onRestore(note.id)}
+              >
+                Restore
+              </button>
+              <button
+                type="button"
+                className="editor__delete-btn"
+                onClick={() => onPermanentDelete(note.id)}
+              >
+                Delete forever
+              </button>
+            </>
+          ) : (
+            <>
+              <select
+                className="editor__folder-select"
+                value={note.folderId}
+                onChange={handleFolderChange}
+                aria-label="Move note to folder"
+              >
+                {folders.map((folder) => (
+                  <option key={folder.id} value={folder.id}>
+                    {folder.name}
+                  </option>
+                ))}
+              </select>
+              <button
+                type="button"
+                className={`editor__pin-btn ${note.pinned ? 'editor__pin-btn--active' : ''}`}
+                onClick={handlePinnedChange}
+              >
+                {note.pinned ? 'Pinned' : 'Pin'}
+              </button>
+              <button
+                type="button"
+                className="editor__delete-btn"
+                onClick={() => onDelete(note.id)}
+              >
+                Delete
+              </button>
+            </>
+          )}
         </div>
       </div>
 
@@ -100,6 +135,7 @@ function NoteEditor({ note, folders, selectedFolder, focusTitle, onUpdate, onDel
         placeholder="Untitled note"
         value={note.title || ''}
         onChange={handleTitleChange}
+        readOnly={isTrashView}
         aria-label="Note title"
       />
 
@@ -108,6 +144,7 @@ function NoteEditor({ note, folders, selectedFolder, focusTitle, onUpdate, onDel
         placeholder="Start writing..."
         value={content}
         onChange={handleContentChange}
+        readOnly={isTrashView}
         aria-label="Note content"
       />
     </main>

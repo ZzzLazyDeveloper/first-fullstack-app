@@ -13,6 +13,7 @@ import { db } from '../firebase'
 const STORAGE_KEY = 'notes-app-data'
 const FOLDERS_STORAGE_KEY = 'notes-app-folders'
 export const ALL_NOTES_ID = 'all-notes'
+export const TRASH_ID = 'trash'
 export const DEFAULT_FOLDER_ID = 'general'
 const DEFAULT_FOLDER = {
   id: DEFAULT_FOLDER_ID,
@@ -31,6 +32,12 @@ function sortNotes(notes) {
   })
 }
 
+function sortTrashNotes(notes) {
+  return [...notes].sort(
+    (a, b) => new Date(b.deletedAt || b.updatedAt || b.createdAt || 0) - new Date(a.deletedAt || a.updatedAt || a.createdAt || 0),
+  )
+}
+
 function sortFolders(folders) {
   return [...folders].sort((a, b) => {
     if (a.id === DEFAULT_FOLDER_ID) return -1
@@ -43,6 +50,8 @@ function normalizeNote(note) {
   return {
     pinned: false,
     folderId: DEFAULT_FOLDER_ID,
+    trashed: false,
+    deletedAt: null,
     ...note,
   }
 }
@@ -136,7 +145,10 @@ export function useNotes(user) {
   const [notesError, setNotesError] = useState('')
 
   const notes = notesState.ownerId === (user?.uid || 'local')
-    ? sortNotes(notesState.notes.map(normalizeNote))
+    ? sortNotes(notesState.notes.map(normalizeNote).filter((note) => !note.trashed))
+    : []
+  const trashedNotes = notesState.ownerId === (user?.uid || 'local')
+    ? sortTrashNotes(notesState.notes.map(normalizeNote).filter((note) => note.trashed))
     : []
   const folders = foldersState.ownerId === (user?.uid || 'local')
     ? ensureDefaultFolder(foldersState.folders)
@@ -271,7 +283,7 @@ export function useNotes(user) {
   }, [user])
 
   const addNote = useCallback((folderId = DEFAULT_FOLDER_ID, title = '', content = '') => {
-    const nextFolderId = folderId === ALL_NOTES_ID ? DEFAULT_FOLDER_ID : folderId
+    const nextFolderId = folderId === ALL_NOTES_ID || folderId === TRASH_ID ? DEFAULT_FOLDER_ID : folderId
     const note = createNote(nextFolderId, title, content)
 
     if (user) {
@@ -376,9 +388,49 @@ export function useNotes(user) {
   }, [updateLocalNotes, user])
 
   const deleteNote = useCallback((id) => {
+    const now = new Date().toISOString()
+    const updates = { trashed: true, deletedAt: now, pinned: false, updatedAt: now }
+
+    if (user) {
+      setDoc(doc(userNotesCollection(user.uid), id), updates, { merge: true }).catch((error) => {
+        setNotesError(error.message || 'Could not delete note.')
+      })
+      return
+    }
+
+    updateLocalNotes((prev) =>
+      prev.map((note) => (note.id === id ? { ...note, ...updates } : note)),
+    )
+  }, [updateLocalNotes, user])
+
+  const restoreNote = useCallback((id) => {
+    const note = trashedNotes.find((item) => item.id === id)
+    const folderId = folders.some((folder) => folder.id === note?.folderId)
+      ? note.folderId
+      : DEFAULT_FOLDER_ID
+    const updates = {
+      trashed: false,
+      deletedAt: null,
+      folderId,
+      updatedAt: new Date().toISOString(),
+    }
+
+    if (user) {
+      setDoc(doc(userNotesCollection(user.uid), id), updates, { merge: true }).catch((error) => {
+        setNotesError(error.message || 'Could not restore note.')
+      })
+      return
+    }
+
+    updateLocalNotes((prev) =>
+      prev.map((item) => (item.id === id ? { ...item, ...updates } : item)),
+    )
+  }, [folders, trashedNotes, updateLocalNotes, user])
+
+  const permanentlyDeleteNote = useCallback((id) => {
     if (user) {
       deleteDoc(doc(userNotesCollection(user.uid), id)).catch((error) => {
-        setNotesError(error.message || 'Could not delete note.')
+        setNotesError(error.message || 'Could not permanently delete note.')
       })
       return
     }
@@ -402,6 +454,7 @@ export function useNotes(user) {
 
   return {
     notes,
+    trashedNotes,
     folders,
     isNotesLoading,
     notesError,
@@ -411,6 +464,8 @@ export function useNotes(user) {
     deleteFolder,
     updateNote,
     deleteNote,
+    restoreNote,
+    permanentlyDeleteNote,
     searchNotes,
   }
 }

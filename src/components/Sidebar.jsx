@@ -1,9 +1,19 @@
 import { formatDate } from '../utils/formatDate'
-import { ALL_NOTES_ID, DEFAULT_FOLDER_ID } from '../hooks/useNotes'
+import { ALL_NOTES_ID, DEFAULT_FOLDER_ID, TRASH_ID } from '../hooks/useNotes'
 import AuthPanel from './AuthPanel'
 import './Sidebar.css'
 
-function NoteCard({ note, isActive, folderName, onSelect, onTogglePinned, onDelete }) {
+function NoteCard({
+  note,
+  isActive,
+  folderName,
+  isTrashView,
+  onSelect,
+  onTogglePinned,
+  onDelete,
+  onRestore,
+  onPermanentDelete,
+}) {
   const title = (note.title || '').trim() || 'Untitled note'
   const preview = (note.content || '').trim() || 'No content yet'
 
@@ -18,24 +28,42 @@ function NoteCard({ note, isActive, folderName, onSelect, onTogglePinned, onDele
           <span className="note-card__folder">{folderName}</span>
         </div>
         <div className="note-card__actions">
-          <button
-            type="button"
-            className={`note-card__pin ${note.pinned ? 'note-card__pin--active' : ''}`}
-            aria-label={note.pinned ? `Unpin ${title}` : `Pin ${title}`}
-            onClick={(event) => {
-              event.stopPropagation()
-              onTogglePinned(note.id, !note.pinned)
-            }}
-          >
-            <span aria-hidden="true">^</span>
-          </button>
+          {isTrashView ? (
+            <button
+              type="button"
+              className="note-card__restore"
+              aria-label={`Restore ${title}`}
+              onClick={(event) => {
+                event.stopPropagation()
+                onRestore(note.id)
+              }}
+            >
+              <span aria-hidden="true">R</span>
+            </button>
+          ) : (
+            <button
+              type="button"
+              className={`note-card__pin ${note.pinned ? 'note-card__pin--active' : ''}`}
+              aria-label={note.pinned ? `Unpin ${title}` : `Pin ${title}`}
+              onClick={(event) => {
+                event.stopPropagation()
+                onTogglePinned(note.id, !note.pinned)
+              }}
+            >
+              <span aria-hidden="true">^</span>
+            </button>
+          )}
           <button
             type="button"
             className="note-card__delete"
-            aria-label={`Delete ${title}`}
+            aria-label={isTrashView ? `Permanently delete ${title}` : `Delete ${title}`}
             onClick={(event) => {
               event.stopPropagation()
-              onDelete(note.id)
+              if (isTrashView) {
+                onPermanentDelete(note.id)
+              } else {
+                onDelete(note.id)
+              }
             }}
           >
             <span aria-hidden="true">x</span>
@@ -52,6 +80,7 @@ function NoteCard({ note, isActive, folderName, onSelect, onTogglePinned, onDele
 
 function Sidebar({
   notes,
+  trashedNotes,
   folders,
   displayNotes,
   searchQuery,
@@ -72,6 +101,8 @@ function Sidebar({
   onSelectFolder,
   onNewNote,
   onDelete,
+  onRestore,
+  onPermanentDelete,
   onAddFolder,
   onRenameFolder,
   onDeleteFolder,
@@ -87,6 +118,7 @@ function Sidebar({
     return names
   }, {})
   const pinnedCount = displayNotes.filter((note) => note.pinned).length
+  const isTrashView = selectedFolderId === TRASH_ID
 
   function handleRenameFolder(folder) {
     const nextName = window.prompt('Rename folder', folder.name)
@@ -128,6 +160,15 @@ function Sidebar({
         >
           <span>All Notes</span>
           <strong>{notes.length}</strong>
+        </button>
+
+        <button
+          type="button"
+          className={`folder-nav__item ${selectedFolderId === TRASH_ID ? 'folder-nav__item--active' : ''}`}
+          onClick={() => onSelectFolder(TRASH_ID)}
+        >
+          <span>Trash</span>
+          <strong>{trashedNotes.length}</strong>
         </button>
 
         <div className="folder-nav__label">
@@ -179,12 +220,13 @@ function Sidebar({
         <input
           type="search"
           className="sidebar__search-input"
-          placeholder="Search notes"
+          placeholder={isTrashView ? 'Trash is not searched' : 'Search notes'}
           value={searchQuery}
+          disabled={isTrashView}
           onChange={(event) => onSearchChange(event.target.value)}
           aria-label="Search notes"
         />
-        {searchQuery && (
+        {!isTrashView && searchQuery && (
           <button
             type="button"
             className="sidebar__search-clear"
@@ -199,8 +241,9 @@ function Sidebar({
       <div className="sidebar__stats">
         {isNotesLoading ? 'Loading notes' : `${displayNotes.length} ${displayNotes.length === 1 ? 'note' : 'notes'}`}
         {user && <span> / cloud</span>}
-        {pinnedCount > 0 && <span> / {pinnedCount} pinned</span>}
-        {searchQuery.trim() && (
+        {!isTrashView && pinnedCount > 0 && <span> / {pinnedCount} pinned</span>}
+        {isTrashView && <span> / trash</span>}
+        {!isTrashView && searchQuery.trim() && (
           <span> / search on</span>
         )}
       </div>
@@ -216,11 +259,13 @@ function Sidebar({
               {searchQuery.trim() ? 'No matches found' : 'No notes in view'}
             </strong>
             <p>
-              {searchQuery.trim()
+              {isTrashView
+                ? 'Deleted notes will wait here until you restore them or delete them forever.'
+                : searchQuery.trim()
                 ? 'Try a different search phrase or clear the filter.'
                 : 'Create a note to start filling this workspace.'}
             </p>
-            {!searchQuery.trim() && (
+            {!isTrashView && !searchQuery.trim() && (
               <button type="button" onClick={onNewNote}>
                 Create note
               </button>
@@ -233,9 +278,12 @@ function Sidebar({
               note={note}
               folderName={folderNames[note.folderId] || 'General'}
               isActive={note.id === selectedId}
+              isTrashView={isTrashView}
               onSelect={onSelect}
               onTogglePinned={(id, pinned) => onUpdateNote(id, { pinned })}
               onDelete={onDelete}
+              onRestore={onRestore}
+              onPermanentDelete={onPermanentDelete}
             />
           ))
         )}
