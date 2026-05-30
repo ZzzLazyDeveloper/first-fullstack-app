@@ -16,6 +16,8 @@ function NoteCard({
 }) {
   const title = (note.title || '').trim() || 'Untitled note'
   const preview = (note.content || '').trim() || 'No content yet'
+  const pinLabel = note.pinned ? 'Unpin' : 'Pin'
+  const deleteLabel = isTrashView ? 'Permanent Delete' : 'Delete'
 
   return (
     <article
@@ -33,30 +35,33 @@ function NoteCard({
               type="button"
               className="note-card__restore"
               aria-label={`Restore ${title}`}
+              title="Restore"
               onClick={(event) => {
                 event.stopPropagation()
                 onRestore(note.id)
               }}
             >
-              <span aria-hidden="true">R</span>
+              Restore
             </button>
           ) : (
             <button
               type="button"
               className={`note-card__pin ${note.pinned ? 'note-card__pin--active' : ''}`}
               aria-label={note.pinned ? `Unpin ${title}` : `Pin ${title}`}
+              title={pinLabel}
               onClick={(event) => {
                 event.stopPropagation()
                 onTogglePinned(note.id, !note.pinned)
               }}
             >
-              <span aria-hidden="true">^</span>
+              {pinLabel}
             </button>
           )}
           <button
             type="button"
             className="note-card__delete"
             aria-label={isTrashView ? `Permanently delete ${title}` : `Delete ${title}`}
+            title={deleteLabel}
             onClick={(event) => {
               event.stopPropagation()
               if (isTrashView) {
@@ -66,7 +71,7 @@ function NoteCard({
               }
             }}
           >
-            <span aria-hidden="true">x</span>
+            {deleteLabel}
           </button>
         </div>
       </div>
@@ -148,7 +153,7 @@ function Sidebar({
           onLogOut={onLogOut}
         />
         <button type="button" className="sidebar__new-btn" onClick={onNewNote}>
-          + New Note
+          New Note
         </button>
       </div>
 
@@ -173,8 +178,8 @@ function Sidebar({
 
         <div className="folder-nav__label">
           <span>Folders</span>
-          <button type="button" onClick={onAddFolder} aria-label="Create folder">
-            +
+          <button type="button" onClick={onAddFolder} aria-label="New Folder" title="New Folder">
+            New Folder
           </button>
         </div>
 
@@ -197,16 +202,18 @@ function Sidebar({
                   <button
                     type="button"
                     aria-label={`Rename ${folder.name}`}
+                    title="Rename"
                     onClick={() => handleRenameFolder(folder)}
                   >
-                    edit
+                    Rename
                   </button>
                   <button
                     type="button"
                     aria-label={`Delete ${folder.name}`}
+                    title="Delete"
                     onClick={() => onDeleteFolder(folder.id)}
                   >
-                    x
+                    Delete
                   </button>
                 </div>
               )}
@@ -216,7 +223,7 @@ function Sidebar({
       </nav>
 
       <div className="sidebar__search">
-        <span className="sidebar__search-icon" aria-hidden="true">/</span>
+        <span className="sidebar__search-label">Search</span>
         <input
           type="search"
           className="sidebar__search-input"
@@ -231,9 +238,10 @@ function Sidebar({
             type="button"
             className="sidebar__search-clear"
             aria-label="Clear search"
+            title="Clear search"
             onClick={() => onSearchChange('')}
           >
-            x
+            Clear
           </button>
         )}
       </div>
@@ -253,21 +261,21 @@ function Sidebar({
         {displayNotes.length === 0 ? (
           <div className="sidebar__empty">
             <span className="sidebar__empty-icon" aria-hidden="true">
-              {searchQuery.trim() ? '/' : '+'}
+              Notes
             </span>
             <strong>
-              {searchQuery.trim() ? 'No matches found' : 'No notes in view'}
+              {searchQuery.trim() ? 'No matches found' : isTrashView ? 'Trash is empty' : 'No notes yet'}
             </strong>
             <p>
               {isTrashView
                 ? 'Deleted notes will wait here until you restore them or delete them forever.'
                 : searchQuery.trim()
                 ? 'Try a different search phrase or clear the filter.'
-                : 'Create a note to start filling this workspace.'}
+                : 'Use New Note to write your first note. Markdown works in the editor preview.'}
             </p>
             {!isTrashView && !searchQuery.trim() && (
               <button type="button" onClick={onNewNote}>
-                Create note
+                New Note
               </button>
             )}
           </div>

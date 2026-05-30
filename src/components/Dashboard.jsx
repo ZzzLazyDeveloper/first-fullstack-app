@@ -234,7 +234,7 @@ function Dashboard() {
         <ConfirmDialog
           title="Permanently delete note?"
           message={`This action cannot be undone. The note will be removed from ${user ? 'Firestore' : 'localStorage'}.`}
-          confirmLabel="Delete forever"
+          confirmLabel="Permanent Delete"
           onConfirm={confirmPermanentDelete}
           onCancel={() => setPermanentDeleteTargetId(null)}
         />
@@ -244,7 +244,7 @@ function Dashboard() {
         <ConfirmDialog
           title="Delete folder?"
           message="Notes in this folder will move to General. This action cannot be undone."
-          confirmLabel="Delete folder"
+          confirmLabel="Delete"
           onConfirm={confirmFolderDelete}
           onCancel={() => setFolderDeleteTargetId(null)}
         />

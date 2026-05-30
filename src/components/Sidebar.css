@@ -173,14 +173,13 @@
 }
 
 .folder-nav__label button {
-  display: grid;
-  width: 28px;
-  height: 28px;
-  place-items: center;
+  min-height: 30px;
+  padding: 6px 9px;
   border: 1px solid var(--color-border);
   border-radius: 9px;
   background: var(--color-panel-muted);
   color: var(--color-heading);
+  font-size: 0.72rem;
   font-weight: 900;
   transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
 }
@@ -217,7 +216,7 @@
 
 .folder-nav__actions {
   display: flex;
-  gap: 2px;
+  gap: 4px;
   padding-right: 4px;
   opacity: 0;
   transition: opacity 0.18s ease;
@@ -230,13 +229,12 @@
 }
 
 .folder-nav__actions button {
-  min-width: 28px;
-  height: 28px;
-  padding: 0 6px;
+  min-height: 28px;
+  padding: 5px 8px;
   border-radius: 8px;
   background: transparent;
   color: #8fa0bb;
-  font-size: 0.68rem;
+  font-size: 0.7rem;
   font-weight: 820;
   transition: background 0.18s ease, color 0.18s ease;
 }
@@ -251,13 +249,13 @@
   padding: 0 22px 12px;
 }
 
-.sidebar__search-icon {
+.sidebar__search-label {
   position: absolute;
   top: 50%;
-  left: 38px;
+  left: 36px;
   transform: translateY(-50%);
   color: var(--color-accent);
-  font-size: 0.9rem;
+  font-size: 0.72rem;
   font-weight: 850;
   pointer-events: none;
 }
@@ -265,7 +263,7 @@
 .sidebar__search-input {
   width: 100%;
   min-height: 44px;
-  padding: 10px 38px;
+  padding: 10px 72px 10px 76px;
   border: 1px solid var(--color-border);
   border-radius: 13px;
   background: rgba(255, 255, 255, 0.055);
@@ -293,13 +291,13 @@
   position: absolute;
   top: 50%;
   right: 32px;
-  width: 28px;
-  height: 28px;
+  min-height: 28px;
+  padding: 5px 8px;
   transform: translateY(-50%);
   border-radius: 8px;
   background: transparent;
   color: #8fa0bb;
-  font-size: 0.85rem;
+  font-size: 0.72rem;
   font-weight: 850;
   transition: background 0.18s ease, color 0.18s ease;
 }
@@ -352,14 +350,15 @@
 
 .sidebar__empty-icon {
   display: grid;
-  width: 42px;
-  height: 42px;
+  min-width: 58px;
+  min-height: 34px;
+  padding: 7px 10px;
   place-items: center;
   border: 1px solid rgba(94, 234, 212, 0.28);
-  border-radius: 14px;
+  border-radius: 11px;
   background: rgba(94, 234, 212, 0.1);
   color: var(--color-accent);
-  font-size: 1.25rem;
+  font-size: 0.78rem;
   font-weight: 800;
 }
 
@@ -451,20 +450,19 @@
   display: flex;
   flex: 0 0 auto;
   gap: 4px;
+  align-items: center;
 }
 
 .note-card__pin,
 .note-card__restore,
 .note-card__delete {
-  display: grid;
-  width: 28px;
-  height: 28px;
-  place-items: center;
+  min-height: 28px;
+  padding: 5px 8px;
   flex: 0 0 auto;
   border-radius: 9px;
   background: rgba(255, 255, 255, 0.04);
   color: #8fa0bb;
-  font-size: 0.82rem;
+  font-size: 0.7rem;
   font-weight: 900;
   opacity: 0;
   transition: background 0.18s ease, color 0.18s ease, opacity 0.18s ease;
@@ -538,8 +536,8 @@
     padding: 0 16px 10px;
   }
 
-  .sidebar__search-icon {
-    left: 32px;
+  .sidebar__search-label {
+    left: 30px;
   }
 
   .sidebar__search-clear {
