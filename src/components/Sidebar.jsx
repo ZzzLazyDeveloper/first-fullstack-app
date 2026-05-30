@@ -112,6 +112,9 @@ function Sidebar({
   onRenameFolder,
   onDeleteFolder,
   onUpdateNote,
+  theme,
+  themes,
+  onThemeChange,
 }) {
   const folderCounts = notes.reduce((counts, note) => {
     const folderId = note.folderId || DEFAULT_FOLDER_ID
@@ -224,6 +227,29 @@ function Sidebar({
           ))}
         </div>
       </nav>
+
+      <section className="settings-panel" aria-label="Settings">
+        <div className="sidebar__section-heading">
+          <span>Settings</span>
+        </div>
+        <label className="settings-panel__field">
+          <span>Theme</span>
+          <select
+            value={theme}
+            onChange={(event) => onThemeChange(event.target.value)}
+            aria-label="Theme"
+          >
+            {themes.map((themeOption) => (
+              <option key={themeOption.id} value={themeOption.id}>
+                {themeOption.name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <p className="settings-panel__hint">
+          Pick a workspace theme. Changes apply immediately.
+        </p>
+      </section>
 
       <div className="sidebar__search">
         <span className="sidebar__search-label">Search</span>

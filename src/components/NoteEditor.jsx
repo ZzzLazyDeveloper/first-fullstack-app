@@ -7,6 +7,75 @@ function safeHref(href) {
   return /^(https?:\/\/|mailto:|#|\/)/i.test(trimmed) ? trimmed : '#'
 }
 
+function getDisplayTitle(note) {
+  return (note.title || '').trim() || 'Untitled note'
+}
+
+function slugifyFileName(title) {
+  const safeName = title
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+
+  return safeName || 'untitled-note'
+}
+
+function buildMarkdownDocument(note) {
+  const title = getDisplayTitle(note)
+  const content = note.content || ''
+
+  return `# ${title}${content.trim() ? `\n\n${content}` : ''}\n`
+}
+
+function stripMarkdown(markdown) {
+  return markdown
+    .replace(/```[\s\S]*?```/g, (block) => block.replace(/```[a-z]*\n?|```/gi, ''))
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/^>\s?/gm, '')
+    .replace(/^[-*]\s+/gm, '')
+    .replace(/^\d+\.\s+/gm, '')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/[*_`~]/g, '')
+}
+
+function buildPlainTextDocument(note) {
+  const title = getDisplayTitle(note)
+  const content = stripMarkdown(note.content || '').trim()
+
+  return `${title}${content ? `\n\n${content}` : ''}\n`
+}
+
+function downloadTextFile(fileName, content, mimeType) {
+  const blob = new Blob([content], { type: mimeType })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+
+  link.href = url
+  link.download = fileName
+  document.body.appendChild(link)
+  link.click()
+  link.remove()
+  URL.revokeObjectURL(url)
+}
+
+async function copyText(text) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text)
+    return
+  }
+
+  const textarea = document.createElement('textarea')
+  textarea.value = text
+  textarea.setAttribute('readonly', '')
+  textarea.style.position = 'fixed'
+  textarea.style.top = '-9999px'
+  document.body.appendChild(textarea)
+  textarea.select()
+  document.execCommand('copy')
+  textarea.remove()
+}
+
 function renderInlineMarkdown(text, keyPrefix) {
   const parts = []
   const pattern = /(`[^`]+`|\*\*[^*]+\*\*|\*[^*]+\*|\[[^\]]+\]\([^)]+\))/g
@@ -186,13 +255,22 @@ function NoteEditor({
   onPermanentDelete,
 }) {
   const titleRef = useRef(null)
+  const exportMenuRef = useRef(null)
   const [mode, setMode] = useState('edit')
+  const [notice, setNotice] = useState('')
 
   useEffect(() => {
     if (note && focusTitle && titleRef.current) {
       titleRef.current.focus()
     }
   }, [note?.id, focusTitle])
+
+  useEffect(() => {
+    if (!notice) return undefined
+
+    const timeoutId = window.setTimeout(() => setNotice(''), 2600)
+    return () => window.clearTimeout(timeoutId)
+  }, [notice])
 
   if (!note) {
     return (
@@ -234,6 +312,38 @@ function NoteEditor({
   function handlePinnedChange() {
     if (isTrashView) return
     onUpdate(note.id, { pinned: !note.pinned })
+  }
+
+  function handleExport(format) {
+    const title = slugifyFileName(getDisplayTitle(note))
+
+    if (format === 'markdown') {
+      downloadTextFile(`${title}.md`, buildMarkdownDocument(note), 'text/markdown;charset=utf-8')
+      setNotice('Exported Markdown file.')
+      exportMenuRef.current?.removeAttribute('open')
+      return
+    }
+
+    downloadTextFile(`${title}.txt`, buildPlainTextDocument(note), 'text/plain;charset=utf-8')
+    setNotice('Exported plain text file.')
+    exportMenuRef.current?.removeAttribute('open')
+  }
+
+  async function handleCopy(format) {
+    try {
+      if (format === 'markdown') {
+        await copyText(buildMarkdownDocument(note))
+        setNotice('Copied Markdown content.')
+        exportMenuRef.current?.removeAttribute('open')
+        return
+      }
+
+      await copyText(buildPlainTextDocument(note))
+      setNotice('Copied note content.')
+      exportMenuRef.current?.removeAttribute('open')
+    } catch {
+      setNotice('Copy failed. Your browser blocked clipboard access.')
+    }
   }
 
   const content = note.content || ''
@@ -309,6 +419,24 @@ function NoteEditor({
               >
                 {note.pinned ? 'Unpin' : 'Pin'}
               </button>
+              <details className="editor__export-menu" ref={exportMenuRef}>
+                <summary>Export Note</summary>
+                <div className="editor__export-panel">
+                  <span>Save or copy this note</span>
+                  <button type="button" onClick={() => handleExport('markdown')}>
+                    Export as Markdown (.md)
+                  </button>
+                  <button type="button" onClick={() => handleExport('text')}>
+                    Export as Plain Text (.txt)
+                  </button>
+                  <button type="button" onClick={() => handleCopy('text')}>
+                    Copy Note Content
+                  </button>
+                  <button type="button" onClick={() => handleCopy('markdown')}>
+                    Copy Markdown Content
+                  </button>
+                </div>
+              </details>
               <button
                 type="button"
                 className="editor__delete-btn"
@@ -320,6 +448,12 @@ function NoteEditor({
           )}
         </div>
       </div>
+
+      {notice && (
+        <div className="editor__notice" role="status" aria-live="polite">
+          {notice}
+        </div>
+      )}
 
       <input
         ref={titleRef}

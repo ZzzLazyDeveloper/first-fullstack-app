@@ -6,7 +6,7 @@
   flex-direction: column;
   background:
     radial-gradient(circle at 78% 8%, rgba(94, 234, 212, 0.09), transparent 28%),
-    rgba(8, 12, 24, 0.38);
+    var(--color-editor-bg);
   overflow: hidden;
   animation: panel-enter 340ms ease both;
 }
@@ -25,13 +25,13 @@
   background:
     radial-gradient(circle at 76% 10%, rgba(139, 92, 246, 0.12), transparent 30%),
     radial-gradient(circle at 18% 84%, rgba(94, 234, 212, 0.08), transparent 28%),
-    rgba(8, 12, 24, 0.38);
+    var(--color-editor-bg);
 }
 
 .editor--trash {
   background:
     radial-gradient(circle at 78% 8%, rgba(251, 113, 133, 0.11), transparent 28%),
-    rgba(10, 11, 22, 0.44);
+    var(--color-editor-trash-bg);
 }
 
 .editor > * {
@@ -84,7 +84,7 @@
 }
 
 .editor__welcome p {
-  color: #9aa8bf;
+  color: var(--color-subtle);
   font-size: 0.98rem;
 }
 
@@ -130,6 +130,7 @@
 }
 
 .editor__toolbar {
+  z-index: 5;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -197,7 +198,8 @@
 }
 
 .editor__mode-btn,
-.editor__pin-btn {
+.editor__pin-btn,
+.editor__export-menu summary {
   min-height: 40px;
   padding: 8px 14px;
   border: 1px solid var(--color-border);
@@ -254,6 +256,87 @@
   color: var(--color-accent);
 }
 
+.editor__export-menu {
+  position: relative;
+  z-index: 6;
+}
+
+.editor__export-menu summary {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  list-style: none;
+}
+
+.editor__export-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.editor__export-menu[open] summary,
+.editor__export-menu summary:hover {
+  border-color: rgba(94, 234, 212, 0.38);
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  transform: translateY(-1px);
+}
+
+.editor__export-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 20;
+  display: grid;
+  width: min(300px, calc(100vw - 32px));
+  gap: 7px;
+  padding: 12px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 14px;
+  background: var(--color-panel-solid);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.34), var(--shadow-glow);
+  pointer-events: auto;
+  animation: panel-enter 180ms ease both;
+}
+
+.editor__export-panel span {
+  color: var(--color-muted);
+  font-size: 0.76rem;
+  font-weight: 820;
+  text-transform: uppercase;
+}
+
+.editor__export-panel button {
+  min-height: 38px;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: var(--color-panel-muted);
+  color: var(--color-heading);
+  font-size: 0.83rem;
+  font-weight: 780;
+  text-align: left;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+
+.editor__export-panel button:hover {
+  border-color: rgba(94, 234, 212, 0.38);
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+.editor__notice {
+  align-self: flex-end;
+  margin: 12px 32px 0;
+  padding: 9px 12px;
+  border: 1px solid rgba(94, 234, 212, 0.34);
+  border-radius: 11px;
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  font-size: 0.84rem;
+  font-weight: 820;
+  box-shadow: 0 0 24px rgba(94, 234, 212, 0.12);
+  animation: panel-enter 200ms ease both;
+}
+
 .editor__delete-btn {
   min-height: 40px;
   padding: 8px 14px;
@@ -282,6 +365,8 @@
 .editor__restore-btn:focus-visible,
 .editor__mode-btn:focus-visible,
 .editor__pin-btn:focus-visible,
+.editor__export-menu summary:focus-visible,
+.editor__export-panel button:focus-visible,
 .editor__folder-select:focus-visible,
 .editor__title:focus-visible,
 .editor__content:focus-visible {
@@ -316,7 +401,7 @@
   padding: 10px 46px 46px;
   border: 0;
   background: transparent;
-  color: #d8e2f2;
+  color: var(--color-editor-text);
   font-size: 1.03rem;
   line-height: 1.78;
   resize: none;
@@ -340,7 +425,7 @@
   min-height: 0;
   overflow-y: auto;
   padding: 10px 46px 46px;
-  color: #d8e2f2;
+  color: var(--color-editor-text);
   font-size: 1.03rem;
   line-height: 1.78;
   animation: panel-enter 320ms ease both;
@@ -420,7 +505,7 @@
   border-left: 3px solid var(--color-accent);
   border-radius: 0 12px 12px 0;
   background: rgba(94, 234, 212, 0.08);
-  color: #b9c7dc;
+  color: var(--color-subtle);
 }
 
 .editor__preview blockquote p + p {
@@ -467,6 +552,15 @@
   .editor__actions {
     display: flex;
     justify-content: flex-start;
+  }
+
+  .editor__export-menu {
+    position: static;
+  }
+
+  .editor__export-panel {
+    left: 18px;
+    right: auto;
   }
 
   .editor__folder-select {

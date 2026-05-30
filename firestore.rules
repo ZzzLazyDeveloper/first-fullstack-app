@@ -13,5 +13,9 @@ service cloud.firestore {
     match /users/{userId}/folders/{folderId} {
       allow read, write: if isSignedInOwner(userId);
     }
+
+    match /users/{userId}/settings/{settingsId} {
+      allow read, write: if isSignedInOwner(userId);
+    }
   }
 }

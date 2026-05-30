@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '../hooks/useAuth'
 import { ALL_NOTES_ID, DEFAULT_FOLDER_ID, TRASH_ID, useNotes } from '../hooks/useNotes'
+import { useTheme } from '../hooks/useTheme'
 import Sidebar from './Sidebar'
 import NoteEditor from './NoteEditor'
 import ConfirmDialog from './ConfirmDialog'
@@ -33,6 +34,7 @@ function Dashboard() {
     permanentlyDeleteNote,
     searchNotes,
   } = useNotes(user)
+  const { theme, themes, setTheme } = useTheme(user)
   const [selectedId, setSelectedId] = useState(null)
   const [selectedFolderId, setSelectedFolderId] = useState(ALL_NOTES_ID)
   const [searchQuery, setSearchQuery] = useState('')
@@ -206,6 +208,9 @@ function Dashboard() {
         onRenameFolder={renameFolder}
         onDeleteFolder={requestFolderDelete}
         onUpdateNote={updateNote}
+        theme={theme}
+        themes={themes}
+        onThemeChange={setTheme}
       />
 
       <NoteEditor

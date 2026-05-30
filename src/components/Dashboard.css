@@ -9,7 +9,7 @@
   border-radius: 24px;
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03)),
-    rgba(10, 14, 26, 0.78);
+    var(--color-shell-bg);
   backdrop-filter: var(--glass-blur);
   box-shadow: var(--shadow-soft), var(--shadow-glow);
   animation: panel-enter 420ms ease both;

@@ -33,7 +33,7 @@
 }
 
 .auth-panel__input::placeholder {
-  color: #738199;
+  color: var(--color-muted);
 }
 
 .auth-panel__input:focus {
@@ -63,7 +63,7 @@
 .auth-panel__primary {
   border: 1px solid rgba(94, 234, 212, 0.26);
   background: linear-gradient(135deg, rgba(94, 234, 212, 0.92), rgba(56, 189, 248, 0.82));
-  color: #03111a;
+  color: var(--color-button-text-on-accent);
 }
 
 .auth-panel__secondary,
@@ -122,5 +122,5 @@
 }
 
 .auth-panel__message {
-  color: #93a1b8;
+  color: var(--color-subtle);
 }
