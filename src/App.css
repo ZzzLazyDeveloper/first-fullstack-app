@@ -1,6 +1,7 @@
 .app {
   min-height: 100vh;
-  padding: 18px;
+  padding: 22px;
+  isolation: isolate;
 }
 
 @media (max-width: 768px) {

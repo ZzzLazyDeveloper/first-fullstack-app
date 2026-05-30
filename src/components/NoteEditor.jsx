@@ -15,13 +15,18 @@ function NoteEditor({ note, folders, selectedFolder, focusTitle, onUpdate, onDel
     return (
       <div className="editor editor--empty">
         <div className="editor__welcome">
-          <span className="editor__welcome-icon" aria-hidden="true">+</span>
+          <span className="editor__welcome-icon" aria-hidden="true">N</span>
           <h2>No note selected</h2>
           <p>
-            Select a note from the sidebar or create a new one. Edits save
-            automatically to Firestore when signed in, or localStorage when
-            signed out.
+            Select a note from the sidebar or create a new one. Your workspace
+            keeps saving through Firestore when signed in, with localStorage
+            ready when signed out.
           </p>
+          <div className="editor__welcome-grid" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </div>
         </div>
       </div>
     )

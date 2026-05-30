@@ -3,7 +3,9 @@
   min-width: 0;
   min-height: 0;
   flex-direction: column;
-  background: var(--color-panel);
+  background:
+    radial-gradient(circle at 78% 8%, rgba(94, 234, 212, 0.09), transparent 28%),
+    rgba(8, 12, 24, 0.38);
 }
 
 .editor--empty {
@@ -13,33 +15,59 @@
 }
 
 .editor__welcome {
-  max-width: 420px;
+  display: grid;
+  max-width: 460px;
+  justify-items: center;
+  gap: 12px;
+  padding: 34px;
+  border: 1px solid var(--color-border);
+  border-radius: 22px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)),
+    rgba(12, 18, 34, 0.62);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.24);
   text-align: center;
 }
 
 .editor__welcome-icon {
   display: inline-grid;
-  width: 58px;
-  height: 58px;
+  width: 62px;
+  height: 62px;
   place-items: center;
-  margin-bottom: 20px;
-  border: 1px solid var(--color-border);
-  border-radius: 16px;
-  background: var(--color-panel-muted);
+  margin-bottom: 4px;
+  border: 1px solid rgba(94, 234, 212, 0.36);
+  border-radius: 18px;
+  background:
+    linear-gradient(135deg, rgba(94, 234, 212, 0.18), rgba(139, 92, 246, 0.18)),
+    rgba(255, 255, 255, 0.05);
   color: var(--color-accent);
-  font-size: 1.8rem;
-  font-weight: 500;
+  font-size: 1.35rem;
+  font-weight: 860;
+  box-shadow: 0 0 34px rgba(94, 234, 212, 0.14);
 }
 
 .editor__welcome h2 {
-  margin-bottom: 10px;
-  font-size: 1.55rem;
-  font-weight: 800;
+  font-size: 1.6rem;
+  font-weight: 850;
 }
 
 .editor__welcome p {
-  color: #647086;
+  color: #9aa8bf;
   font-size: 0.98rem;
+}
+
+.editor__welcome-grid {
+  display: grid;
+  width: min(100%, 270px);
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.editor__welcome-grid span {
+  height: 5px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(94, 234, 212, 0.3), rgba(139, 92, 246, 0.2));
 }
 
 .editor__toolbar {
@@ -49,6 +77,8 @@
   gap: 16px;
   padding: 18px 32px;
   border-bottom: 1px solid var(--color-border);
+  background: rgba(255, 255, 255, 0.035);
+  backdrop-filter: blur(18px);
 }
 
 .editor__meta {
@@ -57,9 +87,9 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
-  color: #69758a;
+  color: var(--color-muted);
   font-size: 0.83rem;
-  font-weight: 700;
+  font-weight: 740;
 }
 
 .editor__actions {
@@ -69,55 +99,66 @@
 }
 
 .editor__meta-divider {
-  color: #a3adbd;
+  color: rgba(168, 180, 202, 0.45);
 }
 
 .editor__folder-select {
-  max-width: 160px;
-  min-height: 38px;
+  max-width: 170px;
+  min-height: 40px;
   padding: 8px 32px 8px 10px;
   border: 1px solid var(--color-border);
-  border-radius: 10px;
-  background: #ffffff;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.07);
   color: var(--color-heading);
   font-size: 0.84rem;
-  font-weight: 720;
+  font-weight: 740;
+  transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.editor__folder-select option {
+  background: var(--color-panel-solid);
+  color: var(--color-heading);
 }
 
 .editor__pin-btn {
-  min-height: 38px;
+  min-height: 40px;
   padding: 8px 14px;
   border: 1px solid var(--color-border);
-  border-radius: 10px;
-  background: #ffffff;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, 0.06);
   color: var(--color-heading);
   font-size: 0.86rem;
-  font-weight: 760;
-  transition: background 0.16s ease, border-color 0.16s ease;
+  font-weight: 780;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;
 }
 
 .editor__pin-btn:hover,
 .editor__pin-btn--active {
+  border-color: rgba(94, 234, 212, 0.38);
   background: var(--color-accent-soft);
-  border-color: rgba(37, 99, 235, 0.28);
-  color: var(--color-accent-dark);
+  color: var(--color-accent);
 }
 
 .editor__delete-btn {
-  min-height: 38px;
+  min-height: 40px;
   padding: 8px 14px;
-  border: 1px solid rgba(220, 38, 38, 0.28);
-  border-radius: 10px;
-  background: #ffffff;
+  border: 1px solid rgba(251, 113, 133, 0.3);
+  border-radius: 11px;
+  background: rgba(251, 113, 133, 0.08);
   color: var(--color-danger);
   font-size: 0.86rem;
-  font-weight: 760;
-  transition: background 0.16s ease, border-color 0.16s ease;
+  font-weight: 780;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
 }
 
 .editor__delete-btn:hover {
+  border-color: rgba(251, 113, 133, 0.48);
   background: var(--color-danger-soft);
-  border-color: rgba(220, 38, 38, 0.42);
+}
+
+.editor__pin-btn:hover,
+.editor__delete-btn:hover {
+  transform: translateY(-1px);
 }
 
 .editor__delete-btn:focus-visible,
@@ -131,17 +172,17 @@
 
 .editor__title {
   width: 100%;
-  padding: 32px 44px 14px;
+  padding: 36px 46px 14px;
   border: 0;
   background: transparent;
   color: var(--color-heading);
-  font-size: 2rem;
-  font-weight: 820;
-  line-height: 1.2;
+  font-size: 2.15rem;
+  font-weight: 850;
+  line-height: 1.18;
 }
 
 .editor__title::placeholder {
-  color: #a0aaba;
+  color: rgba(168, 180, 202, 0.48);
 }
 
 .editor__title:focus {
@@ -152,17 +193,17 @@
   width: 100%;
   min-height: 0;
   flex: 1;
-  padding: 10px 44px 44px;
+  padding: 10px 46px 46px;
   border: 0;
   background: transparent;
-  color: #263248;
-  font-size: 1.02rem;
-  line-height: 1.75;
+  color: #d8e2f2;
+  font-size: 1.03rem;
+  line-height: 1.78;
   resize: none;
 }
 
 .editor__content::placeholder {
-  color: #a0aaba;
+  color: rgba(168, 180, 202, 0.48);
 }
 
 .editor__content:focus {
@@ -175,8 +216,12 @@
   }
 
   .editor--empty {
-    min-height: 55vh;
-    padding: 28px 22px;
+    min-height: 54vh;
+    padding: 28px 18px;
+  }
+
+  .editor__welcome {
+    padding: 28px 20px;
   }
 
   .editor__toolbar {
@@ -202,7 +247,7 @@
 
   .editor__title {
     padding: 24px 20px 10px;
-    font-size: 1.55rem;
+    font-size: 1.6rem;
   }
 
   .editor__content {

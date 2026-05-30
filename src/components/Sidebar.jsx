@@ -208,11 +208,24 @@ function Sidebar({
 
       <div className="sidebar__list">
         {displayNotes.length === 0 ? (
-          <p className="sidebar__empty">
-            {searchQuery.trim()
-              ? 'No notes match your search.'
-              : 'No notes yet. Create your first note.'}
-          </p>
+          <div className="sidebar__empty">
+            <span className="sidebar__empty-icon" aria-hidden="true">
+              {searchQuery.trim() ? '/' : '+'}
+            </span>
+            <strong>
+              {searchQuery.trim() ? 'No matches found' : 'No notes in view'}
+            </strong>
+            <p>
+              {searchQuery.trim()
+                ? 'Try a different search phrase or clear the filter.'
+                : 'Create a note to start filling this workspace.'}
+            </p>
+            {!searchQuery.trim() && (
+              <button type="button" onClick={onNewNote}>
+                Create note
+              </button>
+            )}
+          </div>
         ) : (
           displayNotes.map((note) => (
             <NoteCard

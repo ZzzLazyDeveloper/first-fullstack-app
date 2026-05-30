@@ -6,28 +6,30 @@
   align-items: center;
   justify-content: center;
   padding: 24px;
-  background: rgba(23, 32, 51, 0.45);
-  backdrop-filter: blur(6px);
+  background: rgba(3, 6, 16, 0.62);
+  backdrop-filter: blur(10px);
 }
 
 .dialog {
   width: min(100%, 420px);
   padding: 26px;
-  border: 1px solid var(--color-border);
-  border-radius: 16px;
-  background: var(--color-panel);
-  box-shadow: 0 24px 80px rgba(23, 32, 51, 0.2);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 18px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.035)),
+    rgba(13, 18, 33, 0.92);
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.46);
 }
 
 .dialog__title {
   margin-bottom: 8px;
   font-size: 1.2rem;
-  font-weight: 820;
+  font-weight: 850;
 }
 
 .dialog__message {
   margin-bottom: 24px;
-  color: #647086;
+  color: #9aa8bf;
   font-size: 0.94rem;
 }
 
@@ -40,10 +42,14 @@
 .dialog__btn {
   min-height: 40px;
   padding: 9px 16px;
-  border-radius: 10px;
+  border-radius: 11px;
   font-size: 0.9rem;
-  font-weight: 760;
-  transition: background 0.16s ease, border-color 0.16s ease;
+  font-weight: 780;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+.dialog__btn:hover {
+  transform: translateY(-1px);
 }
 
 .dialog__btn:focus-visible {
@@ -53,21 +59,23 @@
 
 .dialog__btn--cancel {
   border: 1px solid var(--color-border);
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.06);
   color: var(--color-heading);
 }
 
 .dialog__btn--cancel:hover {
-  background: var(--color-panel-muted);
+  border-color: var(--color-border-strong);
+  background: var(--color-panel-hover);
 }
 
 .dialog__btn--confirm {
-  background: var(--color-danger);
-  color: #ffffff;
+  border: 1px solid rgba(251, 113, 133, 0.36);
+  background: linear-gradient(135deg, rgba(251, 113, 133, 0.95), rgba(244, 63, 94, 0.9));
+  color: #fff7f9;
 }
 
 .dialog__btn--confirm:hover {
-  background: #b91c1c;
+  background: linear-gradient(135deg, #fb7185, #e11d48);
 }
 
 @media (max-width: 520px) {
