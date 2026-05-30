@@ -15,35 +15,36 @@ function NoteEditor({ note, focusTitle, onUpdate, onDelete }) {
     return (
       <div className="editor editor--empty">
         <div className="editor__welcome">
-          <span className="editor__welcome-icon">✨</span>
-          <h2>Welcome to Notes</h2>
+          <span className="editor__welcome-icon" aria-hidden="true">+</span>
+          <h2>No note selected</h2>
           <p>
-            Select a note from the sidebar or create a new one to get started.
-            Your notes are saved automatically in your browser.
+            Select a note from the sidebar or create a new one. Edits save
+            automatically to localStorage.
           </p>
         </div>
       </div>
     )
   }
 
-  function handleTitleChange(e) {
-    onUpdate(note.id, { title: e.target.value })
+  function handleTitleChange(event) {
+    onUpdate(note.id, { title: event.target.value })
   }
 
-  function handleContentChange(e) {
-    onUpdate(note.id, { content: e.target.value })
+  function handleContentChange(event) {
+    onUpdate(note.id, { content: event.target.value })
   }
 
-  const wordCount = note.content.trim()
-    ? note.content.trim().split(/\s+/).length
+  const content = note.content || ''
+  const wordCount = content.trim()
+    ? content.trim().split(/\s+/).length
     : 0
 
   return (
-    <div className="editor">
+    <main className="editor">
       <div className="editor__toolbar">
         <div className="editor__meta">
-          <span>Last edited {formatDate(note.updatedAt)}</span>
-          <span className="editor__meta-divider">·</span>
+          <span>Updated {formatDate(note.updatedAt)}</span>
+          <span className="editor__meta-divider">/</span>
           <span>{wordCount} {wordCount === 1 ? 'word' : 'words'}</span>
         </div>
         <button
@@ -51,7 +52,7 @@ function NoteEditor({ note, focusTitle, onUpdate, onDelete }) {
           className="editor__delete-btn"
           onClick={() => onDelete(note.id)}
         >
-          Delete Note
+          Delete
         </button>
       </div>
 
@@ -59,8 +60,8 @@ function NoteEditor({ note, focusTitle, onUpdate, onDelete }) {
         ref={titleRef}
         type="text"
         className="editor__title"
-        placeholder="Note title"
-        value={note.title}
+        placeholder="Untitled note"
+        value={note.title || ''}
         onChange={handleTitleChange}
         aria-label="Note title"
       />
@@ -68,11 +69,11 @@ function NoteEditor({ note, focusTitle, onUpdate, onDelete }) {
       <textarea
         className="editor__content"
         placeholder="Start writing..."
-        value={note.content}
+        value={content}
         onChange={handleContentChange}
         aria-label="Note content"
       />
-    </div>
+    </main>
   )
 }
 

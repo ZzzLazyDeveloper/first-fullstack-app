@@ -1,22 +1,28 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 const STORAGE_KEY = 'notes-app-data'
 
 function loadNotes() {
   try {
     const stored = localStorage.getItem(STORAGE_KEY)
-    return stored ? JSON.parse(stored) : []
+    const parsed = stored ? JSON.parse(stored) : []
+    return Array.isArray(parsed) ? parsed : []
   } catch {
     return []
   }
 }
 
 function saveNotes(notes) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(notes))
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(notes))
+  } catch {
+    // localStorage can fail in private browsing or when storage is full.
+  }
 }
 
 function createNote(title = '', content = '') {
   const now = new Date().toISOString()
+
   return {
     id: crypto.randomUUID(),
     title,
@@ -33,7 +39,7 @@ export function useNotes() {
     saveNotes(notes)
   }, [notes])
 
-  const addNote = useCallback((title = 'Untitled', content = '') => {
+  const addNote = useCallback((title = '', content = '') => {
     const note = createNote(title, content)
     setNotes((prev) => [note, ...prev])
     return note
@@ -60,8 +66,8 @@ export function useNotes() {
 
       return notes.filter(
         (note) =>
-          note.title.toLowerCase().includes(trimmed) ||
-          note.content.toLowerCase().includes(trimmed),
+          (note.title || '').toLowerCase().includes(trimmed) ||
+          (note.content || '').toLowerCase().includes(trimmed),
       )
     },
     [notes],

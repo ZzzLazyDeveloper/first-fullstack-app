@@ -2,7 +2,8 @@ import { formatDate } from '../utils/formatDate'
 import './Sidebar.css'
 
 function NoteCard({ note, isActive, onSelect, onDelete }) {
-  const preview = note.content.trim() || 'No content yet'
+  const title = (note.title || '').trim() || 'Untitled note'
+  const preview = (note.content || '').trim() || 'No content yet'
 
   return (
     <article
@@ -10,24 +11,22 @@ function NoteCard({ note, isActive, onSelect, onDelete }) {
       onClick={() => onSelect(note.id)}
     >
       <div className="note-card__header">
-        <h3 className="note-card__title">
-          {note.title.trim() || 'Untitled'}
-        </h3>
+        <h3 className="note-card__title">{title}</h3>
         <button
           type="button"
           className="note-card__delete"
-          aria-label="Delete note"
-          onClick={(e) => {
-            e.stopPropagation()
+          aria-label={`Delete ${title}`}
+          onClick={(event) => {
+            event.stopPropagation()
             onDelete(note.id)
           }}
         >
-          ✕
+          <span aria-hidden="true">x</span>
         </button>
       </div>
       <p className="note-card__preview">{preview}</p>
       <time className="note-card__date" dateTime={note.updatedAt}>
-        {formatDate(note.updatedAt)}
+        Updated {formatDate(note.updatedAt)}
       </time>
     </article>
   )
@@ -46,11 +45,14 @@ function Sidebar({
   const displayNotes = searchQuery.trim() ? filteredNotes : notes
 
   return (
-    <aside className="sidebar">
+    <aside className="sidebar" aria-label="Notes">
       <div className="sidebar__header">
         <div className="sidebar__brand">
-          <span className="sidebar__logo">📝</span>
-          <h1 className="sidebar__title">Yubo's Notes App</h1>
+          <span className="sidebar__logo" aria-hidden="true">N</span>
+          <div>
+            <p className="sidebar__eyebrow">Local workspace</p>
+            <h1 className="sidebar__title">Notes</h1>
+          </div>
         </div>
         <button type="button" className="sidebar__new-btn" onClick={onNewNote}>
           + New Note
@@ -58,13 +60,13 @@ function Sidebar({
       </div>
 
       <div className="sidebar__search">
-        <span className="sidebar__search-icon" aria-hidden="true">🔍</span>
+        <span className="sidebar__search-icon" aria-hidden="true">/</span>
         <input
           type="search"
           className="sidebar__search-input"
-          placeholder="Search notes..."
+          placeholder="Search notes"
           value={searchQuery}
-          onChange={(e) => onSearchChange(e.target.value)}
+          onChange={(event) => onSearchChange(event.target.value)}
           aria-label="Search notes"
         />
         {searchQuery && (
@@ -74,7 +76,7 @@ function Sidebar({
             aria-label="Clear search"
             onClick={() => onSearchChange('')}
           >
-            ✕
+            x
           </button>
         )}
       </div>
@@ -82,7 +84,7 @@ function Sidebar({
       <div className="sidebar__stats">
         {notes.length} {notes.length === 1 ? 'note' : 'notes'}
         {searchQuery.trim() && displayNotes.length !== notes.length && (
-          <span> · {displayNotes.length} found</span>
+          <span> / {displayNotes.length} found</span>
         )}
       </div>
 
@@ -91,7 +93,7 @@ function Sidebar({
           <p className="sidebar__empty">
             {searchQuery.trim()
               ? 'No notes match your search.'
-              : 'No notes yet. Create your first one!'}
+              : 'No notes yet. Create your first note.'}
           </p>
         ) : (
           displayNotes.map((note) => (

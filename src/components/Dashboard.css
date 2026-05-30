@@ -1,14 +1,22 @@
 .dashboard {
-  display: flex;
-  height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+  height: calc(100vh - 36px);
+  min-height: 620px;
   overflow: hidden;
+  background: var(--color-panel);
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+  box-shadow: var(--shadow-soft);
 }
 
 @media (max-width: 768px) {
   .dashboard {
+    display: flex;
     flex-direction: column;
-    height: auto;
+    height: 100vh;
     min-height: 100vh;
-    overflow: auto;
+    border: 0;
+    border-radius: 0;
   }
 }

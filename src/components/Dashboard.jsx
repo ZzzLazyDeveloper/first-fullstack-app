@@ -66,7 +66,7 @@ function Dashboard() {
       {deleteTargetId && (
         <ConfirmDialog
           title="Delete note?"
-          message="This action cannot be undone. The note will be permanently removed."
+          message="This action cannot be undone. The note will be removed from localStorage."
           confirmLabel="Delete"
           onConfirm={confirmDelete}
           onCancel={() => setDeleteTargetId(null)}

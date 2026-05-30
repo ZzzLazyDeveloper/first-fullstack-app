@@ -1,83 +1,85 @@
 .dialog-overlay {
   position: fixed;
   inset: 0;
-  z-index: 200;
+  z-index: 20;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
   padding: 24px;
-  animation: fadeIn 0.15s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  background: rgba(23, 32, 51, 0.45);
+  backdrop-filter: blur(6px);
 }
 
 .dialog {
-  width: 100%;
-  max-width: 400px;
-  padding: 28px;
-  background: var(--color-bg-elevated);
+  width: min(100%, 420px);
+  padding: 26px;
   border: 1px solid var(--color-border);
   border-radius: 16px;
-  animation: slideUp 0.2s ease;
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  background: var(--color-panel);
+  box-shadow: 0 24px 80px rgba(23, 32, 51, 0.2);
 }
 
 .dialog__title {
-  font-size: 1.15rem;
   margin-bottom: 8px;
+  font-size: 1.2rem;
+  font-weight: 820;
 }
 
 .dialog__message {
-  font-size: 0.9rem;
-  color: var(--color-text);
-  line-height: 1.6;
   margin-bottom: 24px;
+  color: #647086;
+  font-size: 0.94rem;
 }
 
 .dialog__actions {
   display: flex;
-  gap: 12px;
   justify-content: flex-end;
+  gap: 10px;
 }
 
 .dialog__btn {
-  padding: 10px 20px;
+  min-height: 40px;
+  padding: 9px 16px;
+  border-radius: 10px;
   font-size: 0.9rem;
-  font-weight: 500;
-  border-radius: 8px;
-  transition: background 0.15s;
+  font-weight: 760;
+  transition: background 0.16s ease, border-color 0.16s ease;
+}
+
+.dialog__btn:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
 }
 
 .dialog__btn--cancel {
-  background: var(--color-bg-card);
   border: 1px solid var(--color-border);
-  color: var(--color-text-heading);
+  background: #ffffff;
+  color: var(--color-heading);
 }
 
 .dialog__btn--cancel:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--color-panel-muted);
 }
 
 .dialog__btn--confirm {
-  background: #dc2626;
-  color: white;
+  background: var(--color-danger);
+  color: #ffffff;
 }
 
 .dialog__btn--confirm:hover {
   background: #b91c1c;
+}
+
+@media (max-width: 520px) {
+  .dialog {
+    padding: 22px;
+  }
+
+  .dialog__actions {
+    flex-direction: column-reverse;
+  }
+
+  .dialog__btn {
+    width: 100%;
+  }
 }
